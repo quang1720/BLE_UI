@@ -10,16 +10,24 @@ def disconnect(address):
     # Logic for disconnecting
     pass
 
-async def connect_device(selected_device, connect_callback):
-    if selected_device:
-        address = selected_device.split(" (")[1].rstrip(")")
-        client = await connect(address)
-        if client:
+async def connect_device(address):
+    client = BleakClient(address)
+    try:
+        await client.connect()
+        if client.is_connected:
             print(f"Connected to {address}")
-            connect_callback(address, client)
+            return client
+        else:
+            return None
+    except Exception as e:
+        print(f"Failed to connect to {address}: {e}")
+        return None
 
-def disconnect_device(address, disconnect_callback):
-    if address:
-        disconnect(address)
-        print(f"Disconnected from {address}")
-        disconnect_callback()
+async def disconnect_device(client):
+    try:
+        await client.disconnect()
+        # print("Disconnected successfully.")
+        if not client.is_connected:
+            print("Disconnected successfully.")
+    except Exception as e:
+        print(f"Failed to disconnect: {e}")
