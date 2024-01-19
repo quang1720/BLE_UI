@@ -26,8 +26,6 @@ async def connect_device(address):
 async def disconnect_device(client):
     try:
         await client.disconnect()
-        # print("Disconnected successfully.")
-        if not client.is_connected:
-            print("Disconnected successfully.")
+        print("Disconnected successfully.")
     except Exception as e:
         print(f"Failed to disconnect: {e}")
