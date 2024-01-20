@@ -81,14 +81,11 @@ class BluetoothScannerApp:
     @async_handler
     async def on_read_characteristic(self):
         char_uuid = "eca1a4d3-06d7-4696-aac7-6e9444c7a3be"
-        if self.client:
-            reader = Reader_Char(self.client)
-            data = await reader.read_gatt_char(char_uuid)
-            # if not (data==[]):
-            self.update_read_textbox(data)
-            # else:
-            #     print("No data received or client not connected.")
-
+        reader = Reader_Char(self.client, self.update_read_characteristic_box)
+        await reader.read_char(char_uuid)
+        # if self.client:
+        #     value = await self.client.read_gatt_char(char_uuid)
+        #     print(value)
     
     def update_read_characteristic_box(self, data):
         self.read_characteristic_textbox.delete("1.0", tk.END)
