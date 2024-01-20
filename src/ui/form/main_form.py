@@ -6,6 +6,7 @@ from src.util.scan import discover_devices
 from src.util.connect_disconnect import connect_device, disconnect_device
 from src.util.notify_listener import NotifyListener
 from src.util.read_char import Reader_Char
+from src.util.write_and_verify_char import Write_And_Verify_Char
 from async_tkinter_loop import async_handler
 import numpy as np
 
@@ -26,70 +27,110 @@ class BluetoothScannerApp:
     def __init__(self, root):
         self.root = root
         root.title("Bluetooth Scanner")
+        self.client = None
 
         # Scan Button
         self.scan_button = ttk.Button(root, text="Scan", command=self.scan_devices)
-        self.scan_button.grid(row=0, column=0, padx=5, pady=5)
+        self.scan_button.grid(row=0, column=0, padx=2, pady=5)
 
         # Devices Combobox
         self.devices_combobox = ttk.Combobox(root, state="readonly")
-        self.devices_combobox.grid(row=0, column=1, padx=5, pady=5)
+        self.devices_combobox.grid(row=0, column=1, padx=2, pady=5)
 
         # Connect Button
         self.connect_button = ttk.Button(
             root, text="Connect", command=self.connect_device
         )
-        self.connect_button.grid(row=1, column=0, padx=5, pady=5)
+        self.connect_button.grid(row=1, column=0, padx=2, pady=5)
 
         # Disconnect Button
         self.disconnect_button = ttk.Button(
             root, text="Disconnect", command=self.disconnect_device
         )
-        self.disconnect_button.grid(row=1, column=1, padx=5, pady=5)
+        self.disconnect_button.grid(row=1, column=1, padx=2, pady=5)
 
         # Text Box for Notifications
-        self.notifications_textbox = tk.Text(root, height=2, width=50)
-        self.notifications_textbox.grid(row=2, column=1, columnspan=2, padx=5, pady=5)
+        self.notifications_textbox = tk.Text(root, height=2, width=70)
+        self.notifications_textbox.grid(row=2, column=1, columnspan=2, padx=2, pady=5)
         # Listen Notify Button
         self.listen_notify_button = ttk.Button(
-            root, text="Listen Notify", command=self.on_listen_notify
+            root, text="Listen Notify", command = self.on_listen_notify
         )
-        self.listen_notify_button.grid(row=2, column=0, columnspan=1, padx=5, pady=5)
+        self.listen_notify_button.grid(row=2, column=0, columnspan=1, padx=2, pady=5)
 
         # Text Box for read characteristic
         self.read_characteristic_textbox = tk.Text(root, height=2, width=70)
-        self.read_characteristic_textbox.grid(row=3, column=1, columnspan=2, padx=5, pady=5)
+        self.read_characteristic_textbox.grid(row=3, column=1, columnspan=2, padx=2, pady=5)
         # Listen Notify Button
         self.read_characteristic_button = ttk.Button(
-            root, text="Read_char", command=self.on_read_characteristic
+            root, text="Read_char", command = self.on_read_characteristic
         )
-        self.read_characteristic_button.grid(row=3, column=0, columnspan=1, padx=5, pady=5)
-        
+        self.read_characteristic_button.grid(row=3, column=0, columnspan=1, padx=2, pady=5)
 
-        self.client = None
+        # Write Widget
+        self.textbox1 = tk.Text(root, height=2, width=20)
+        self.textbox1.grid(row=4, column=1, padx=0, pady=10)
+
+        self.textbox2 = tk.Text(root, height=2, width=20)
+        self.textbox2.grid(row=4, column=2, padx=0, pady=10)
+
+        self.textbox3 = tk.Text(root, height=2, width=20)
+        self.textbox3.grid(row=4, column=3, padx=30, pady=10)
+
+        self.textbox4 = tk.Text(root, height=2, width=20)
+        self.textbox4.grid(row=4, column=4, padx=30, pady=10)
+
+        self.write_button = ttk.Button(root, text="Write to Char", command = self.on_write_to_char)
+        self.write_button.grid(row=4, columnspan=1)
 
     @async_handler
-    async def on_listen_notify(self):
-        if self.client:
-            self.notify_listener = NotifyListener(self.client, self.update_notification_box)
-            await self.notify_listener.start_listening("3e20933e-2607-4e75-94bf-6e507b58dc5d")
+    async def on_write_to_char(self):
+        # await self.write_and_verify_characteristic()
+        self.write_and_verify_char = Write_And_Verify_Char(self.client, [self.textbox1, self.textbox2, self.textbox3, self.textbox4])
+        await self.write_and_verify_char.write_and_verify_characteristic("eca1a4d3-06d7-4696-aac7-6e9444c7a3be")
 
-    def update_notification_box(self, notification):
-        self.notifications_textbox.delete("1.0", tk.END)
-        self.notifications_textbox.insert(tk.END, f"{notification}\n")
+    # @async_handler
+    # async def write_and_verify_characteristic(self):
+    #     CHARACTERISTIC_UUID = "eca1a4d3-06d7-4696-aac7-6e9444c7a3be"
+    #     if not self.client:
+    #         print("No device connected")
+    #         return
+
+    #     data_to_write = self.get_data()
+
+    #     # Write data to characteristic
+    #     await self.client.write_gatt_char(CHARACTERISTIC_UUID, data_to_write, response=True)
+
+    #     # Wait for 1ms (1000 microseconds)
+    #     await asyncio.sleep(0.1)
+
+    #     # Read data back from characteristic
+    #     read_data = await self.client.read_gatt_char(CHARACTERISTIC_UUID)
+
+    #     # Verify if the written data matches the read data
+    #     if data_to_write == read_data:
+    #         print("Write success")
+    #     else:
+    #         print("Data mismatch")
+
     
-    @async_handler
-    async def on_read_characteristic(self):
-        char_uuid = "eca1a4d3-06d7-4696-aac7-6e9444c7a3be"
-        reader = Reader_Char(self.client, self.update_read_characteristic_box)
-        await reader.read_char(char_uuid)
-        # if self.client:
-        #     value = await self.client.read_gatt_char(char_uuid)
-        #     print(value)
-    
-    def update_read_characteristic_box(self, data):
-        self.read_characteristic_textbox.delete("1.0", tk.END)
-        self.read_characteristic_textbox.insert(tk.END, f"{data}\n")
+    # def get_data(self):
+    #     data_array = []
+
+    #     for textbox in [self.textbox1, self.textbox2, self.textbox3, self.textbox4]:
+    #         text = textbox.get("1.0", "end-1c").strip()
+    #         print(text)
+    #         if text:
+    #             try:
+    #                 # Assuming the input should be converted to integer
+    #                 data_array.append(int(text))
+    #             except ValueError:
+    #                 print(f"Invalid input in a textbox: {text}")
+    #         else:
+    #             data_array.append(0)
+    #     print(data_array)
+    #     print(bytearray(data_array))
+    #     return bytearray(data_array)
 
     @async_handler
     async def scan_devices(self):
@@ -136,4 +177,28 @@ class BluetoothScannerApp:
         if self.client:
             asyncio.create_task(disconnect_device(self.client))
             self.client = None
+    
+    @async_handler
+    async def on_listen_notify(self):
+        if self.client:
+            self.notify_listener = NotifyListener(self.client, self.update_notification_box)
+            await self.notify_listener.start_listening("3e20933e-2607-4e75-94bf-6e507b58dc5d")
+
+    def update_notification_box(self, notification):
+        self.notifications_textbox.delete("1.0", tk.END)
+        self.notifications_textbox.insert(tk.END, f"{notification}\n")
+    
+    @async_handler
+    async def on_read_characteristic(self):
+        char_uuid = "eca1a4d3-06d7-4696-aac7-6e9444c7a3be"
+        reader = Reader_Char(self.client, self.update_read_characteristic_box)
+        await reader.read_char(char_uuid)
+        # if self.client:
+        #     value = await self.client.read_gatt_char(char_uuid)
+        #     print(value)
+    
+    def update_read_characteristic_box(self, data):
+        self.read_characteristic_textbox.delete("1.0", tk.END)
+        self.read_characteristic_textbox.insert(tk.END, f"{data}\n")
+
 
