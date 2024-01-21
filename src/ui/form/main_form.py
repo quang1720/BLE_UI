@@ -57,6 +57,11 @@ class BluetoothScannerApp:
             root, text="Listen Notify0", command = self.on_listen_notify
         )
         self.listen_notify_button.grid(row=2, column=0, columnspan=1, padx=2, pady=5)
+        # Log notifications to csv button0
+        self.log_notify_button = ttk.Button(
+            root, text="Log Notify0", command = self.on_log_notify
+            )
+        self.log_notify_button.grid(row=2, column=3, columnspan=1, padx=2, pady=5)
 
         # Text Box1 for Notifications
         self.notifications_textbox1 = tk.Text(root, height=2, width=70)
@@ -210,23 +215,29 @@ class BluetoothScannerApp:
         if self.client:
             self.notify_listener = NotifyListener(self.client, self.update_notification_box)
             await self.notify_listener.start_listening("3e20933e-2607-4e75-94bf-6e507b58dc5d")
+
+    @async_handler
+    async def on_log_notify(self):
+        if self.client:
+            self.notify_listener.stop_listening("3e20933e-2607-4e75-94bf-6e507b58dc5d")
+
     @async_handler
     async def on_listen_notify1(self):
         if self.client:
-            self.notify_listener = NotifyListener(self.client, self.update_notification_box1)
-            await self.notify_listener.start_listening("f27769db-02bc-40a2-afb0-addfb72dd658")
+            self.notify_listener1 = NotifyListener(self.client, self.update_notification_box1)
+            await self.notify_listener1.start_listening("f27769db-02bc-40a2-afb0-addfb72dd658")
     
     @async_handler
     async def on_listen_notify2(self):
         if self.client:
-            self.notify_listener = NotifyListener(self.client, self.update_notification_box2)
-            await self.notify_listener.start_listening("3918cbce-b2a3-433a-afc8-8490e3b689f4")
+            self.notify_listener2 = NotifyListener(self.client, self.update_notification_box2)
+            await self.notify_listener2.start_listening("3918cbce-b2a3-433a-afc8-8490e3b689f4")
     
     @async_handler
     async def on_listen_notify3(self):
         if self.client:
-            self.notify_listener = NotifyListener(self.client, self.update_notification_box3)
-            await self.notify_listener.start_listening("b0084375-1400-4947-8f78-9b32a6373b32")
+            self.notify_listener3 = NotifyListener(self.client, self.update_notification_box3)
+            await self.notify_listener3.start_listening("b0084375-1400-4947-8f78-9b32a6373b32")
 
     def update_notification_box(self, notification):
         self.notifications_textbox.delete("1.0", tk.END)
