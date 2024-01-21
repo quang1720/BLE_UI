@@ -49,39 +49,66 @@ class BluetoothScannerApp:
         )
         self.disconnect_button.grid(row=1, column=1, padx=2, pady=5)
 
-        # Text Box for Notifications
+        # Text Box0 for Notifications
         self.notifications_textbox = tk.Text(root, height=2, width=70)
         self.notifications_textbox.grid(row=2, column=1, columnspan=2, padx=2, pady=5)
-        # Listen Notify Button
+        # Listen Notify Button0
         self.listen_notify_button = ttk.Button(
-            root, text="Listen Notify", command = self.on_listen_notify
+            root, text="Listen Notify0", command = self.on_listen_notify
         )
         self.listen_notify_button.grid(row=2, column=0, columnspan=1, padx=2, pady=5)
 
+        # Text Box1 for Notifications
+        self.notifications_textbox1 = tk.Text(root, height=2, width=70)
+        self.notifications_textbox1.grid(row=3, column=1, columnspan=2, padx=2, pady=5)
+        # Listen Notify Button1
+        self.listen_notify_button1 = ttk.Button(
+            root, text="Listen Notify1", command = self.on_listen_notify1
+        )
+        self.listen_notify_button1.grid(row=3, column=0, columnspan=1, padx=2, pady=5)
+
+        # Text Box2 for Notifications
+        self.notifications_textbox2 = tk.Text(root, height=2, width=70)
+        self.notifications_textbox2.grid(row=4, column=1, columnspan=2, padx=2, pady=5)
+        # Listen Notify Button2
+        self.listen_notify_button2 = ttk.Button(
+            root, text="Listen Notify2", command = self.on_listen_notify2
+        )
+        self.listen_notify_button2.grid(row=4, column=0, columnspan=1, padx=2, pady=5)
+
+        # Text Box3 for Notifications
+        self.notifications_textbox3 = tk.Text(root, height=2, width=70)
+        self.notifications_textbox3.grid(row=5, column=1, columnspan=2, padx=2, pady=5)
+        # Listen Notify Button3
+        self.listen_notify_button3 = ttk.Button(
+            root, text="Listen Notify3", command = self.on_listen_notify3
+        )
+        self.listen_notify_button3.grid(row=5, column=0, columnspan=1, padx=2, pady=5)
+
         # Text Box for read characteristic
         self.read_characteristic_textbox = tk.Text(root, height=2, width=70)
-        self.read_characteristic_textbox.grid(row=3, column=1, columnspan=2, padx=2, pady=5)
-        # Listen Notify Button
+        self.read_characteristic_textbox.grid(row=6, column=1, columnspan=2, padx=2, pady=5)
+        # read characteristic Button
         self.read_characteristic_button = ttk.Button(
             root, text="Read_char", command = self.on_read_characteristic
         )
-        self.read_characteristic_button.grid(row=3, column=0, columnspan=1, padx=2, pady=5)
+        self.read_characteristic_button.grid(row=6, column=0, columnspan=1, padx=2, pady=5)
 
         # Write Widget
         self.textbox1 = tk.Text(root, height=2, width=20)
-        self.textbox1.grid(row=4, column=1, padx=0, pady=10)
+        self.textbox1.grid(row=7, column=1, padx=0, pady=10)
 
         self.textbox2 = tk.Text(root, height=2, width=20)
-        self.textbox2.grid(row=4, column=2, padx=0, pady=10)
+        self.textbox2.grid(row=7, column=2, padx=0, pady=10)
 
         self.textbox3 = tk.Text(root, height=2, width=20)
-        self.textbox3.grid(row=4, column=3, padx=30, pady=10)
+        self.textbox3.grid(row=7, column=3, padx=30, pady=10)
 
         self.textbox4 = tk.Text(root, height=2, width=20)
-        self.textbox4.grid(row=4, column=4, padx=30, pady=10)
+        self.textbox4.grid(row=7, column=4, padx=30, pady=10)
 
         self.write_button = ttk.Button(root, text="Write to Char", command = self.on_write_to_char)
-        self.write_button.grid(row=4, columnspan=1)
+        self.write_button.grid(row=7, columnspan=1)
 
     @async_handler
     async def on_write_to_char(self):
@@ -183,10 +210,39 @@ class BluetoothScannerApp:
         if self.client:
             self.notify_listener = NotifyListener(self.client, self.update_notification_box)
             await self.notify_listener.start_listening("3e20933e-2607-4e75-94bf-6e507b58dc5d")
+    @async_handler
+    async def on_listen_notify1(self):
+        if self.client:
+            self.notify_listener = NotifyListener(self.client, self.update_notification_box1)
+            await self.notify_listener.start_listening("f27769db-02bc-40a2-afb0-addfb72dd658")
+    
+    @async_handler
+    async def on_listen_notify2(self):
+        if self.client:
+            self.notify_listener = NotifyListener(self.client, self.update_notification_box2)
+            await self.notify_listener.start_listening("3918cbce-b2a3-433a-afc8-8490e3b689f4")
+    
+    @async_handler
+    async def on_listen_notify3(self):
+        if self.client:
+            self.notify_listener = NotifyListener(self.client, self.update_notification_box3)
+            await self.notify_listener.start_listening("b0084375-1400-4947-8f78-9b32a6373b32")
 
     def update_notification_box(self, notification):
         self.notifications_textbox.delete("1.0", tk.END)
         self.notifications_textbox.insert(tk.END, f"{notification}\n")
+    
+    def update_notification_box1(self, notification):
+        self.notifications_textbox1.delete("1.0", tk.END)
+        self.notifications_textbox1.insert(tk.END, f"{notification}\n")
+
+    def update_notification_box2(self, notification):
+        self.notifications_textbox2.delete("1.0", tk.END)
+        self.notifications_textbox2.insert(tk.END, f"{notification}\n")
+    
+    def update_notification_box3(self, notification):
+        self.notifications_textbox3.delete("1.0", tk.END)
+        self.notifications_textbox3.insert(tk.END, f"{notification}\n")
     
     @async_handler
     async def on_read_characteristic(self):
