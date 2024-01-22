@@ -71,6 +71,11 @@ class BluetoothScannerApp:
             root, text="Listen Notify1", command = self.on_listen_notify1
         )
         self.listen_notify_button1.grid(row=3, column=0, columnspan=1, padx=2, pady=5)
+        # Log notifications to csv button1
+        self.log_notify_button1 = ttk.Button(
+            root, text="Log Notify1", command = self.on_log_notify1
+            )
+        self.log_notify_button1.grid(row=3, column=3, columnspan=1, padx=2, pady=5)
 
         # Text Box2 for Notifications
         self.notifications_textbox2 = tk.Text(root, height=2, width=70)
@@ -80,6 +85,11 @@ class BluetoothScannerApp:
             root, text="Listen Notify2", command = self.on_listen_notify2
         )
         self.listen_notify_button2.grid(row=4, column=0, columnspan=1, padx=2, pady=5)
+        # Log notifications to csv button2
+        self.log_notify_button2 = ttk.Button(
+            root, text="Log Notify2", command = self.on_log_notify2
+            )
+        self.log_notify_button2.grid(row=4, column=3, columnspan=1, padx=2, pady=5)
 
         # Text Box3 for Notifications
         self.notifications_textbox3 = tk.Text(root, height=2, width=70)
@@ -89,6 +99,11 @@ class BluetoothScannerApp:
             root, text="Listen Notify3", command = self.on_listen_notify3
         )
         self.listen_notify_button3.grid(row=5, column=0, columnspan=1, padx=2, pady=5)
+        # Log notifications to csv button0
+        self.log_notify_button3 = ttk.Button(
+            root, text="Log Notify3", command = self.on_log_notify3
+            )
+        self.log_notify_button3.grid(row=5, column=3, columnspan=1, padx=2, pady=5)
 
         # Text Box for read characteristic
         self.read_characteristic_textbox = tk.Text(root, height=2, width=70)
@@ -120,49 +135,6 @@ class BluetoothScannerApp:
         # await self.write_and_verify_characteristic()
         self.write_and_verify_char = Write_And_Verify_Char(self.client, [self.textbox1, self.textbox2, self.textbox3, self.textbox4])
         await self.write_and_verify_char.write_and_verify_characteristic("eca1a4d3-06d7-4696-aac7-6e9444c7a3be")
-
-    # @async_handler
-    # async def write_and_verify_characteristic(self):
-    #     CHARACTERISTIC_UUID = "eca1a4d3-06d7-4696-aac7-6e9444c7a3be"
-    #     if not self.client:
-    #         print("No device connected")
-    #         return
-
-    #     data_to_write = self.get_data()
-
-    #     # Write data to characteristic
-    #     await self.client.write_gatt_char(CHARACTERISTIC_UUID, data_to_write, response=True)
-
-    #     # Wait for 1ms (1000 microseconds)
-    #     await asyncio.sleep(0.1)
-
-    #     # Read data back from characteristic
-    #     read_data = await self.client.read_gatt_char(CHARACTERISTIC_UUID)
-
-    #     # Verify if the written data matches the read data
-    #     if data_to_write == read_data:
-    #         print("Write success")
-    #     else:
-    #         print("Data mismatch")
-
-    
-    # def get_data(self):
-    #     data_array = []
-
-    #     for textbox in [self.textbox1, self.textbox2, self.textbox3, self.textbox4]:
-    #         text = textbox.get("1.0", "end-1c").strip()
-    #         print(text)
-    #         if text:
-    #             try:
-    #                 # Assuming the input should be converted to integer
-    #                 data_array.append(int(text))
-    #             except ValueError:
-    #                 print(f"Invalid input in a textbox: {text}")
-    #         else:
-    #             data_array.append(0)
-    #     print(data_array)
-    #     print(bytearray(data_array))
-    #     return bytearray(data_array)
 
     @async_handler
     async def scan_devices(self):
@@ -226,6 +198,10 @@ class BluetoothScannerApp:
         if self.client:
             self.notify_listener1 = NotifyListener(self.client, self.update_notification_box1)
             await self.notify_listener1.start_listening("f27769db-02bc-40a2-afb0-addfb72dd658")
+    @async_handler
+    async def on_log_notify1(self):
+        if self.client:
+            self.notify_listener1.stop_listening("f27769db-02bc-40a2-afb0-addfb72dd658")
     
     @async_handler
     async def on_listen_notify2(self):
@@ -234,10 +210,19 @@ class BluetoothScannerApp:
             await self.notify_listener2.start_listening("3918cbce-b2a3-433a-afc8-8490e3b689f4")
     
     @async_handler
+    async def on_log_notify2(self):
+        if self.client:
+            self.notify_listener2.stop_listening("3918cbce-b2a3-433a-afc8-8490e3b689f4")
+    
+    @async_handler
     async def on_listen_notify3(self):
         if self.client:
             self.notify_listener3 = NotifyListener(self.client, self.update_notification_box3)
             await self.notify_listener3.start_listening("b0084375-1400-4947-8f78-9b32a6373b32")
+    @async_handler
+    async def on_log_notify3(self):
+        if self.client:
+            self.notify_listener3.stop_listening("b0084375-1400-4947-8f78-9b32a6373b32")
 
     def update_notification_box(self, notification):
         self.notifications_textbox.delete("1.0", tk.END)
