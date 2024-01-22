@@ -1,12 +1,16 @@
 import tkinter as tk
 from tkinter import ttk
 import asyncio
-import threading
+import matplotlib.pyplot as plt
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from src.util.scan import discover_devices
 from src.util.connect_disconnect import connect_device, disconnect_device
 from src.util.notify_listener import NotifyListener
 from src.util.read_char import Reader_Char
 from src.util.write_and_verify_char import Write_And_Verify_Char
+from src.ui.widget.plot_widget import Plot_Window
+import matplotlib.dates as mdates
+from datetime import datetime
 from async_tkinter_loop import async_handler
 import numpy as np
 
@@ -66,6 +70,7 @@ class BluetoothScannerApp:
         # Text Box1 for Notifications
         self.notifications_textbox1 = tk.Text(root, height=2, width=70)
         self.notifications_textbox1.grid(row=3, column=1, columnspan=2, padx=2, pady=5)
+
         # Listen Notify Button1
         self.listen_notify_button1 = ttk.Button(
             root, text="Listen Notify1", command = self.on_listen_notify1
@@ -130,6 +135,23 @@ class BluetoothScannerApp:
         self.write_button = ttk.Button(root, text="Write to Char", command = self.on_write_to_char)
         self.write_button.grid(row=7, columnspan=1)
 
+        # Plot Data Button
+        self.plot_data_button = ttk.Button(root, text="Plot Data", command=self.plot_data)
+        self.plot_data_button.grid(row=8, column=0, padx=2, pady=5)
+
+        # Initialize plot
+        self.figure, self.ax = plt.subplots()
+        self.line, = self.ax.plot([], [], lw=2)
+        self.ax.grid()
+        self.canvas = FigureCanvasTkAgg(self.figure, master=root)
+        self.canvas_widget = self.canvas.get_tk_widget()
+        self.canvas_widget.grid(row=9, column=0, columnspan=4, padx=2, pady=5)
+        
+        # Data storage
+        self.plot_x_data = []
+        self.plot_y_data = []
+
+
     @async_handler
     async def on_write_to_char(self):
         # await self.write_and_verify_characteristic()
@@ -185,7 +207,7 @@ class BluetoothScannerApp:
     @async_handler
     async def on_listen_notify(self):
         if self.client:
-            self.notify_listener = NotifyListener(self.client, self.update_notification_box)
+            self.notify_listener = NotifyListener(self.client, self.update_notification_box,self.update_plotdata)
             await self.notify_listener.start_listening("3e20933e-2607-4e75-94bf-6e507b58dc5d")
 
     @async_handler
@@ -196,7 +218,7 @@ class BluetoothScannerApp:
     @async_handler
     async def on_listen_notify1(self):
         if self.client:
-            self.notify_listener1 = NotifyListener(self.client, self.update_notification_box1)
+            self.notify_listener1 = NotifyListener(self.client, self.update_notification_box1,self.update_plotdata1)
             await self.notify_listener1.start_listening("f27769db-02bc-40a2-afb0-addfb72dd658")
     @async_handler
     async def on_log_notify1(self):
@@ -206,7 +228,7 @@ class BluetoothScannerApp:
     @async_handler
     async def on_listen_notify2(self):
         if self.client:
-            self.notify_listener2 = NotifyListener(self.client, self.update_notification_box2)
+            self.notify_listener2 = NotifyListener(self.client, self.update_notification_box2,self.update_plotdata2)
             await self.notify_listener2.start_listening("3918cbce-b2a3-433a-afc8-8490e3b689f4")
     
     @async_handler
@@ -217,7 +239,7 @@ class BluetoothScannerApp:
     @async_handler
     async def on_listen_notify3(self):
         if self.client:
-            self.notify_listener3 = NotifyListener(self.client, self.update_notification_box3)
+            self.notify_listener3 = NotifyListener(self.client, self.update_notification_box3, self.update_plotdata3)
             await self.notify_listener3.start_listening("b0084375-1400-4947-8f78-9b32a6373b32")
     @async_handler
     async def on_log_notify3(self):
@@ -253,4 +275,28 @@ class BluetoothScannerApp:
         self.read_characteristic_textbox.delete("1.0", tk.END)
         self.read_characteristic_textbox.insert(tk.END, f"{data}\n")
 
+    def update_plotdata(self, datax, datay):
+        time_obj = datetime.strptime(datax, "%H:%M:%S")
+        matplotlib_time = mdates.date2num(time_obj)
+        self.plot_x_data.append(datax)
+        self.plot_y_data.append(datay)
+        self.line.set_data(self.plot_x_data, self.plot_y_data)
+        self.ax.relim()
+        self.ax.autoscale_view(True, True, True)
+        self.canvas.draw()
+        
+    def update_plotdata1(self, datax, datay):
+        pass
+    def update_plotdata2(self, datax, datay):
+        pass
+    def update_plotdata3(self, datax, datay):
+        pass
 
+
+    def plot_data(self):
+        if self.plot_x_data and self.plot_y_data:
+            self.ax.clear()
+            self.ax.plot(self.plot_x_data, self.plot_y_data)
+            self.canvas.draw()
+
+    

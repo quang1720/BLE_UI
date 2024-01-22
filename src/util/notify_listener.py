@@ -6,10 +6,11 @@ from async_tkinter_loop import async_handler
 from datetime import datetime
 
 class NotifyListener:
-    def __init__(self, client, update_callback):
+    def __init__(self, client, update_callback,update_callback2):
         self.client = client
         self.update_callback = update_callback
         self.temp_file_name = None
+        self.update_callback2 = update_callback2
 
     @async_handler
     async def start_listening(self, characteristic_uuid):
@@ -20,11 +21,15 @@ class NotifyListener:
     async def notification_handler(self, sender, data):
         ints = np.frombuffer(data, dtype=np.uint8)
         floats = ints.astype(np.float32)
-        print(floats)
+        print(len(floats))
+        print(floats[3])
         current_time = datetime.now().strftime("%D-%M-%Y_%H:%M:%S")
+        current_time1 = datetime.now().strftime("%H:%M:%S")
         self.save_to_csv(self.temp_file_name, [[current_time, *floats]])
         if self.update_callback:
             self.update_callback(floats)
+        if self.update_callback2:
+            self.update_callback2(current_time1,floats[2])
 
     def save_to_csv(self, file_name, data):
         mode = 'a' if os.path.exists(file_name) else 'w'
