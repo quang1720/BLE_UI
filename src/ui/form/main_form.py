@@ -1,8 +1,10 @@
 import tkinter as tk
 from tkinter import ttk
 import asyncio
-import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+import matplotlib.pyplot as plt
+import matplotlib.animation as animation
+from tkinter import Toplevel
 from src.util.scan import discover_devices
 from src.util.connect_disconnect import connect_device, disconnect_device
 from src.util.notify_listener import NotifyListener
@@ -66,6 +68,12 @@ class BluetoothScannerApp:
             root, text="Log Notify0", command = self.on_log_notify
             )
         self.log_notify_button.grid(row=2, column=3, columnspan=1, padx=2, pady=5)
+        # Plot Data Button0
+        self.plot_data_button = ttk.Button(root, text="Plot Data", command=self.plot_data)
+        self.plot_data_button.grid(row=2, column=4, padx=2, pady=5)
+        # Plot Widget0
+        self.plotwidget = Plot_Window(self.root)
+
 
         # Text Box1 for Notifications
         self.notifications_textbox1 = tk.Text(root, height=2, width=70)
@@ -81,6 +89,11 @@ class BluetoothScannerApp:
             root, text="Log Notify1", command = self.on_log_notify1
             )
         self.log_notify_button1.grid(row=3, column=3, columnspan=1, padx=2, pady=5)
+        # Plot Data Button1
+        self.plot_data_button1 = ttk.Button(root, text="Plot Data1", command=self.plot_data1)
+        self.plot_data_button1.grid(row=3, column=4, padx=2, pady=5)
+        # Plot Widget1
+        self.plotwidget1 = Plot_Window(self.root)
 
         # Text Box2 for Notifications
         self.notifications_textbox2 = tk.Text(root, height=2, width=70)
@@ -95,6 +108,11 @@ class BluetoothScannerApp:
             root, text="Log Notify2", command = self.on_log_notify2
             )
         self.log_notify_button2.grid(row=4, column=3, columnspan=1, padx=2, pady=5)
+        # Plot Data Button2
+        self.plot_data_button2 = ttk.Button(root, text="Plot Data2", command=self.plot_data2)
+        self.plot_data_button2.grid(row=4, column=4, padx=2, pady=5)
+        # Plot Widget2
+        self.plotwidget2 = Plot_Window(self.root)
 
         # Text Box3 for Notifications
         self.notifications_textbox3 = tk.Text(root, height=2, width=70)
@@ -104,7 +122,7 @@ class BluetoothScannerApp:
             root, text="Listen Notify3", command = self.on_listen_notify3
         )
         self.listen_notify_button3.grid(row=5, column=0, columnspan=1, padx=2, pady=5)
-        # Log notifications to csv button0
+        # Log notifications to csv button3
         self.log_notify_button3 = ttk.Button(
             root, text="Log Notify3", command = self.on_log_notify3
             )
@@ -113,6 +131,12 @@ class BluetoothScannerApp:
         # Text Box for read characteristic
         self.read_characteristic_textbox = tk.Text(root, height=2, width=70)
         self.read_characteristic_textbox.grid(row=6, column=1, columnspan=2, padx=2, pady=5)
+        # Plot Data Button3
+        self.plot_data_button3 = ttk.Button(root, text="Plot Data3", command=self.plot_data3)
+        self.plot_data_button3.grid(row=5, column=4, padx=2, pady=5)
+        # Plot Widget0
+        self.plotwidget3 = Plot_Window(self.root)
+
         # read characteristic Button
         self.read_characteristic_button = ttk.Button(
             root, text="Read_char", command = self.on_read_characteristic
@@ -135,21 +159,6 @@ class BluetoothScannerApp:
         self.write_button = ttk.Button(root, text="Write to Char", command = self.on_write_to_char)
         self.write_button.grid(row=7, columnspan=1)
 
-        # Plot Data Button
-        self.plot_data_button = ttk.Button(root, text="Plot Data", command=self.plot_data)
-        self.plot_data_button.grid(row=8, column=0, padx=2, pady=5)
-
-        # Initialize plot
-        self.figure, self.ax = plt.subplots()
-        self.line, = self.ax.plot([], [], lw=2)
-        self.ax.grid()
-        self.canvas = FigureCanvasTkAgg(self.figure, master=root)
-        self.canvas_widget = self.canvas.get_tk_widget()
-        self.canvas_widget.grid(row=9, column=0, columnspan=4, padx=2, pady=5)
-        
-        # Data storage
-        self.plot_x_data = []
-        self.plot_y_data = []
 
 
     @async_handler
@@ -175,7 +184,7 @@ class BluetoothScannerApp:
             address = selected.split(" (")[1].rstrip(")")
             self.client = await connect_device(address)
             if self.client:
-                if self.check_gatt_profile(self.client):  # Remove 'await' here
+                if self.check_gatt_profile(self.client):
                     print(
                         f"Connected to {address} with required services and characteristics"
                     )
@@ -267,36 +276,33 @@ class BluetoothScannerApp:
         char_uuid = "eca1a4d3-06d7-4696-aac7-6e9444c7a3be"
         reader = Reader_Char(self.client, self.update_read_characteristic_box)
         await reader.read_char(char_uuid)
-        # if self.client:
-        #     value = await self.client.read_gatt_char(char_uuid)
-        #     print(value)
     
     def update_read_characteristic_box(self, data):
         self.read_characteristic_textbox.delete("1.0", tk.END)
         self.read_characteristic_textbox.insert(tk.END, f"{data}\n")
 
     def update_plotdata(self, datax, datay):
-        time_obj = datetime.strptime(datax, "%H:%M:%S")
-        matplotlib_time = mdates.date2num(time_obj)
-        self.plot_x_data.append(datax)
-        self.plot_y_data.append(datay)
-        self.line.set_data(self.plot_x_data, self.plot_y_data)
-        self.ax.relim()
-        self.ax.autoscale_view(True, True, True)
-        self.canvas.draw()
-        
+        self.plotwidget.get_data(datax, datay)
+
     def update_plotdata1(self, datax, datay):
-        pass
+        self.plotwidget1.get_data(datax, datay)
+
     def update_plotdata2(self, datax, datay):
-        pass
+        self.plotwidget2.get_data(datax, datay)
+        
     def update_plotdata3(self, datax, datay):
-        pass
+        self.plotwidget3.get_data(datax, datay)
 
 
     def plot_data(self):
-        if self.plot_x_data and self.plot_y_data:
-            self.ax.clear()
-            self.ax.plot(self.plot_x_data, self.plot_y_data)
-            self.canvas.draw()
+        self.plotwidget.plotdata()  
 
+    def plot_data1(self):
+        self.plotwidget1.plotdata()
+
+    def plot_data2(self):
+        self.plotwidget2.plotdata()
+
+    def plot_data3(self):
+        self.plotwidget3.plotdata()
     

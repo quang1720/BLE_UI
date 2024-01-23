@@ -21,15 +21,13 @@ class NotifyListener:
     async def notification_handler(self, sender, data):
         ints = np.frombuffer(data, dtype=np.uint8)
         floats = ints.astype(np.float32)
-        print(len(floats))
-        print(floats[3])
         current_time = datetime.now().strftime("%D-%M-%Y_%H:%M:%S")
         current_time1 = datetime.now().strftime("%H:%M:%S")
         self.save_to_csv(self.temp_file_name, [[current_time, *floats]])
         if self.update_callback:
             self.update_callback(floats)
         if self.update_callback2:
-            self.update_callback2(current_time1,floats[2])
+            self.update_callback2(current_time1,floats[1])
 
     def save_to_csv(self, file_name, data):
         mode = 'a' if os.path.exists(file_name) else 'w'
