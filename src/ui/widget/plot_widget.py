@@ -11,13 +11,14 @@ class Plot_Window:
         self.x = []
         self.y = []
         self.animations = []
+        self.winname = None
     
-    def get_data(self,datax,datay):
+    def get_data(self, datax, datay, name):
         self.x.append(datax) 
         self.y.append(datay)
         self.x = self.x[-10:]
         self.y = self.y[-10:]
-
+        self.winname = name
 
     # def create_window(self):
     #     self.window = Toplevel(self.root)
@@ -42,7 +43,7 @@ class Plot_Window:
             ax.set_ylabel('Character Value')
             # plt.xticks(rotation=45, ha='right')
             plt.subplots_adjust(bottom=0.30)
-            plt.title('Live Graph with Timestamp and Sliding Window')
+            plt.title(f'{self.winname}')
 
         canvas = FigureCanvasTkAgg(fig, master=new_window)
         canvas_widget = canvas.get_tk_widget()

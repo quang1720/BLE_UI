@@ -37,7 +37,7 @@ class BluetoothScannerApp:
 
         # Scan Button
         self.scan_button = ttk.Button(root, text="Scan", command=self.scan_devices)
-        self.scan_button.grid(row=0, column=0, padx=2, pady=5)
+        self.scan_button.grid(row=0, column=0, padx=2, pady=1)
 
         # Devices Combobox
         self.devices_combobox = ttk.Combobox(root, state="readonly")
@@ -47,114 +47,72 @@ class BluetoothScannerApp:
         self.connect_button = ttk.Button(
             root, text="Connect", command=self.connect_device
         )
-        self.connect_button.grid(row=1, column=0, padx=2, pady=5)
+        self.connect_button.grid(row=1, column=0, padx=2, pady=1)
 
         # Disconnect Button
         self.disconnect_button = ttk.Button(
             root, text="Disconnect", command=self.disconnect_device
         )
-        self.disconnect_button.grid(row=1, column=1, padx=2, pady=5)
+        # self.disconnect_button.grid(row=1, column=1, padx=2, pady=5)
 
-        # Text Box0 for Notifications
-        self.notifications_textbox = tk.Text(root, height=2, width=70)
-        self.notifications_textbox.grid(row=2, column=1, columnspan=2, padx=2, pady=5)
         # Listen Notify Button0
         self.listen_notify_button = ttk.Button(
-            root, text="Listen Notify0", command = self.on_listen_notify
+            root, text="Listen Notify", command = self.on_listen_notify
         )
-        self.listen_notify_button.grid(row=2, column=0, columnspan=1, padx=2, pady=5)
+        self.listen_notify_button.grid(row=2, column=0, columnspan=1, padx=2, pady=1)
         # Log notifications to csv button0
         self.log_notify_button = ttk.Button(
-            root, text="Log Notify0", command = self.on_log_notify
+            root, text="Export Notify1", command = self.on_log_notify
             )
-        self.log_notify_button.grid(row=2, column=3, columnspan=1, padx=2, pady=5)
-        # Plot Data Button0
-        self.plot_data_button = ttk.Button(root, text="Plot Data", command=self.plot_data)
-        self.plot_data_button.grid(row=2, column=4, padx=2, pady=5)
-        # Plot Widget0
-        self.plotwidget = Plot_Window(self.root)
-
-
-        # Text Box1 for Notifications
-        self.notifications_textbox1 = tk.Text(root, height=2, width=70)
-        self.notifications_textbox1.grid(row=3, column=1, columnspan=2, padx=2, pady=5)
-
-        # Listen Notify Button1
-        self.listen_notify_button1 = ttk.Button(
-            root, text="Listen Notify1", command = self.on_listen_notify1
-        )
-        self.listen_notify_button1.grid(row=3, column=0, columnspan=1, padx=2, pady=5)
-        # Log notifications to csv button1
+        self.log_notify_button.grid(row=3, column=1, columnspan=1, padx=2, pady=1)
         self.log_notify_button1 = ttk.Button(
-            root, text="Log Notify1", command = self.on_log_notify1
+            root, text="Export Notify2", command = self.on_log_notify1
             )
-        self.log_notify_button1.grid(row=3, column=3, columnspan=1, padx=2, pady=5)
-        # Plot Data Button1
-        self.plot_data_button1 = ttk.Button(root, text="Plot Data1", command=self.plot_data1)
-        self.plot_data_button1.grid(row=3, column=4, padx=2, pady=5)
-        # Plot Widget1
-        self.plotwidget1 = Plot_Window(self.root)
-
-        # Text Box2 for Notifications
-        self.notifications_textbox2 = tk.Text(root, height=2, width=70)
-        self.notifications_textbox2.grid(row=4, column=1, columnspan=2, padx=2, pady=5)
-        # Listen Notify Button2
-        self.listen_notify_button2 = ttk.Button(
-            root, text="Listen Notify2", command = self.on_listen_notify2
-        )
-        self.listen_notify_button2.grid(row=4, column=0, columnspan=1, padx=2, pady=5)
-        # Log notifications to csv button2
+        self.log_notify_button1.grid(row=3, column=2, columnspan=1, padx=2, pady=1)
         self.log_notify_button2 = ttk.Button(
-            root, text="Log Notify2", command = self.on_log_notify2
+            root, text="Export Notify3", command = self.on_log_notify2
             )
-        self.log_notify_button2.grid(row=4, column=3, columnspan=1, padx=2, pady=5)
-        # Plot Data Button2
-        self.plot_data_button2 = ttk.Button(root, text="Plot Data2", command=self.plot_data2)
-        self.plot_data_button2.grid(row=4, column=4, padx=2, pady=5)
-        # Plot Widget2
-        self.plotwidget2 = Plot_Window(self.root)
-
-        # Text Box3 for Notifications
-        self.notifications_textbox3 = tk.Text(root, height=2, width=70)
-        self.notifications_textbox3.grid(row=5, column=1, columnspan=2, padx=2, pady=5)
-        # Listen Notify Button3
-        self.listen_notify_button3 = ttk.Button(
-            root, text="Listen Notify3", command = self.on_listen_notify3
-        )
-        self.listen_notify_button3.grid(row=5, column=0, columnspan=1, padx=2, pady=5)
-        # Log notifications to csv button3
+        self.log_notify_button2.grid(row=3, column=3, columnspan=1, padx=2, pady=1)
         self.log_notify_button3 = ttk.Button(
-            root, text="Log Notify3", command = self.on_log_notify3
+            root, text="Export Notify4", command = self.on_log_notify3
             )
-        self.log_notify_button3.grid(row=5, column=3, columnspan=1, padx=2, pady=5)
+        self.log_notify_button3.grid(row=3, column=4, columnspan=1, padx=2, pady=1)
+        # Plot Data Button0
+        self.plot_data_button = ttk.Button(root, text="Plot Data 1", command=self.plot_data)
+        self.plot_data_button.grid(row=2, column=1, padx=2, pady=1)
+        self.plot_data_button1 = ttk.Button(root, text="Plot Data 2", command=self.plot_data1)
+        self.plot_data_button1.grid(row=2, column=2, padx=2, pady=1)
+        self.plot_data_button2 = ttk.Button(root, text="Plot Data 3", command=self.plot_data2)
+        self.plot_data_button2.grid(row=2, column=3, padx=2, pady=1)
+        self.plot_data_button3 = ttk.Button(root, text="Plot Data 4", command=self.plot_data3)
+        self.plot_data_button3.grid(row=2, column=4, padx=2, pady=1)
+        # Plot Widget
+        self.plotwidget = Plot_Window(self.root)
+        self.plotwidget1 = Plot_Window(self.root)
+        self.plotwidget2 = Plot_Window(self.root)
+        self.plotwidget3 = Plot_Window(self.root)
 
         # Text Box for read characteristic
         self.read_characteristic_textbox = tk.Text(root, height=2, width=70)
-        self.read_characteristic_textbox.grid(row=6, column=1, columnspan=2, padx=2, pady=5)
-        # Plot Data Button3
-        self.plot_data_button3 = ttk.Button(root, text="Plot Data3", command=self.plot_data3)
-        self.plot_data_button3.grid(row=5, column=4, padx=2, pady=5)
-        # Plot Widget0
-        self.plotwidget3 = Plot_Window(self.root)
-
+        self.read_characteristic_textbox.grid(row=6, column=1, columnspan=2, padx=2, pady=1)
         # read characteristic Button
         self.read_characteristic_button = ttk.Button(
             root, text="Read_char", command = self.on_read_characteristic
         )
-        self.read_characteristic_button.grid(row=6, column=0, columnspan=1, padx=2, pady=5)
+        self.read_characteristic_button.grid(row=6, column=0, columnspan=1, padx=2, pady=1)
 
         # Write Widget
         self.textbox1 = tk.Text(root, height=2, width=20)
-        self.textbox1.grid(row=7, column=1, padx=0, pady=10)
+        self.textbox1.grid(row=7, column=1, padx=0, pady=2)
 
         self.textbox2 = tk.Text(root, height=2, width=20)
-        self.textbox2.grid(row=7, column=2, padx=0, pady=10)
+        self.textbox2.grid(row=7, column=2, padx=0, pady=2)
 
         self.textbox3 = tk.Text(root, height=2, width=20)
-        self.textbox3.grid(row=7, column=3, padx=30, pady=10)
+        self.textbox3.grid(row=7, column=3, padx=30, pady=2)
 
         self.textbox4 = tk.Text(root, height=2, width=20)
-        self.textbox4.grid(row=7, column=4, padx=30, pady=10)
+        self.textbox4.grid(row=7, column=4, padx=30, pady=2)
 
         self.write_button = ttk.Button(root, text="Write to Char", command = self.on_write_to_char)
         self.write_button.grid(row=7, columnspan=1)
@@ -169,8 +127,13 @@ class BluetoothScannerApp:
 
     @async_handler
     async def scan_devices(self):
+        self.devices_combobox.set("Scaning")
         devices = await discover_devices()
         self.update_devices_combobox(devices)
+        if not devices:
+            self.devices_combobox.set("No devices found")
+        else:
+            self.devices_combobox.set("Select a device")
 
     def update_devices_combobox(self, devices):
         self.devices_combobox["values"] = [
@@ -188,6 +151,8 @@ class BluetoothScannerApp:
                     print(
                         f"Connected to {address} with required services and characteristics"
                     )
+                    self.connect_button.grid_forget()
+                    self.disconnect_button.grid(row=1, column=0, padx=2, pady=5)
                 else:
                     print(
                         "Required services or characteristics not found. Disconnecting."
@@ -212,12 +177,27 @@ class BluetoothScannerApp:
         if self.client:
             asyncio.create_task(disconnect_device(self.client))
             self.client = None
+            self.disconnect_button.grid_forget()
+            self.connect_button.grid(row=1, column=0, padx=2, pady=5)
     
-    @async_handler
-    async def on_listen_notify(self):
+    
+    def on_listen_notify(self):
         if self.client:
-            self.notify_listener = NotifyListener(self.client, self.update_notification_box,self.update_plotdata)
-            await self.notify_listener.start_listening("3e20933e-2607-4e75-94bf-6e507b58dc5d")
+            self.notify_listener = NotifyListener(self.client,  self.update_plotdata)
+            
+            self.notify_listener1 = NotifyListener(self.client, self.update_plotdata1)
+            
+            self.notify_listener2 = NotifyListener(self.client, self.update_plotdata2)
+            
+            self.notify_listener3 = NotifyListener(self.client, self.update_plotdata3)
+            self.start_listening()
+
+    @async_handler
+    async def start_listening(self):
+        await self.notify_listener.start_listening("3e20933e-2607-4e75-94bf-6e507b58dc5d")
+        await self.notify_listener1.start_listening("f27769db-02bc-40a2-afb0-addfb72dd658")
+        await self.notify_listener2.start_listening("3918cbce-b2a3-433a-afc8-8490e3b689f4")
+        await self.notify_listener3.start_listening("b0084375-1400-4947-8f78-9b32a6373b32")
 
     @async_handler
     async def on_log_notify(self):
@@ -225,20 +205,9 @@ class BluetoothScannerApp:
             self.notify_listener.stop_listening("3e20933e-2607-4e75-94bf-6e507b58dc5d")
 
     @async_handler
-    async def on_listen_notify1(self):
-        if self.client:
-            self.notify_listener1 = NotifyListener(self.client, self.update_notification_box1,self.update_plotdata1)
-            await self.notify_listener1.start_listening("f27769db-02bc-40a2-afb0-addfb72dd658")
-    @async_handler
     async def on_log_notify1(self):
         if self.client:
             self.notify_listener1.stop_listening("f27769db-02bc-40a2-afb0-addfb72dd658")
-    
-    @async_handler
-    async def on_listen_notify2(self):
-        if self.client:
-            self.notify_listener2 = NotifyListener(self.client, self.update_notification_box2,self.update_plotdata2)
-            await self.notify_listener2.start_listening("3918cbce-b2a3-433a-afc8-8490e3b689f4")
     
     @async_handler
     async def on_log_notify2(self):
@@ -246,30 +215,9 @@ class BluetoothScannerApp:
             self.notify_listener2.stop_listening("3918cbce-b2a3-433a-afc8-8490e3b689f4")
     
     @async_handler
-    async def on_listen_notify3(self):
-        if self.client:
-            self.notify_listener3 = NotifyListener(self.client, self.update_notification_box3, self.update_plotdata3)
-            await self.notify_listener3.start_listening("b0084375-1400-4947-8f78-9b32a6373b32")
-    @async_handler
     async def on_log_notify3(self):
         if self.client:
             self.notify_listener3.stop_listening("b0084375-1400-4947-8f78-9b32a6373b32")
-
-    def update_notification_box(self, notification):
-        self.notifications_textbox.delete("1.0", tk.END)
-        self.notifications_textbox.insert(tk.END, f"{notification}\n")
-    
-    def update_notification_box1(self, notification):
-        self.notifications_textbox1.delete("1.0", tk.END)
-        self.notifications_textbox1.insert(tk.END, f"{notification}\n")
-
-    def update_notification_box2(self, notification):
-        self.notifications_textbox2.delete("1.0", tk.END)
-        self.notifications_textbox2.insert(tk.END, f"{notification}\n")
-    
-    def update_notification_box3(self, notification):
-        self.notifications_textbox3.delete("1.0", tk.END)
-        self.notifications_textbox3.insert(tk.END, f"{notification}\n")
     
     @async_handler
     async def on_read_characteristic(self):
@@ -281,17 +229,17 @@ class BluetoothScannerApp:
         self.read_characteristic_textbox.delete("1.0", tk.END)
         self.read_characteristic_textbox.insert(tk.END, f"{data}\n")
 
-    def update_plotdata(self, datax, datay):
-        self.plotwidget.get_data(datax, datay)
+    def update_plotdata(self, datax, datay, sender):
+        self.plotwidget.get_data(datax, datay, sender)
 
-    def update_plotdata1(self, datax, datay):
-        self.plotwidget1.get_data(datax, datay)
+    def update_plotdata1(self, datax, datay, sender):
+        self.plotwidget1.get_data(datax, datay, sender)
 
-    def update_plotdata2(self, datax, datay):
-        self.plotwidget2.get_data(datax, datay)
+    def update_plotdata2(self, datax, datay, sender):
+        self.plotwidget2.get_data(datax, datay, sender)
         
-    def update_plotdata3(self, datax, datay):
-        self.plotwidget3.get_data(datax, datay)
+    def update_plotdata3(self, datax, datay, sender):
+        self.plotwidget3.get_data(datax, datay, sender)
 
 
     def plot_data(self):
